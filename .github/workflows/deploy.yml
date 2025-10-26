@@ -1,4 +1,4 @@
-name: "Deploy Worker"
+name: "Build and deploy Worker to a Cloudflare instance"
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: "Build & Deploy Worker"
+      - name: "Build & deploy Worker"
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
