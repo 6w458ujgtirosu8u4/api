@@ -1,0 +1,454 @@
+{
+  "meta": {
+    "format": "httpie",
+    "version": "1.0.0",
+    "contentType": "workspace",
+    "schema": "https://schema.httpie.io/1.0.0.json",
+    "docs": "https://httpie.io/r/help/export-from-httpie",
+    "source": "HTTPie Desktop 2025.2.0"
+  },
+  "entry": {
+    "name": "Marketing API",
+    "icon": {
+      "name": "rocket",
+      "color": "blue"
+    },
+    "collections": [
+      {
+        "name": "Tenants",
+        "icon": {
+          "name": "globe",
+          "color": "blue"
+        },
+        "auth": {
+          "type": "none"
+        },
+        "requests": [
+          {
+            "name": "Get",
+            "url": "{{HOST}}/{{VERSION}}/tenants",
+            "method": "GET",
+            "headers": [],
+            "queryParams": [
+              {
+                "name": "page",
+                "value": "1",
+                "enabled": true
+              },
+              {
+                "name": "size",
+                "value": "20",
+                "enabled": true
+              },
+              {
+                "name": "sort",
+                "value": "name",
+                "enabled": true
+              },
+              {
+                "name": "order",
+                "value": "asc",
+                "enabled": true
+              }
+            ],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Create",
+            "url": "{{HOST}}/{{VERSION}}/tenants",
+            "method": "POST",
+            "headers": [],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "text",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "{\n  \"name\": \"Temp\",\n  \"slug\": \"temp\",\n  \"status\": 1\n}",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Update by Slug",
+            "url": "{{HOST}}/{{VERSION}}/tenants/temp",
+            "method": "PUT",
+            "headers": [],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "text",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "{\n  \"name\": \"Arasaka Corp\",\n  \"slug\": \"arasaka-corp\"\n}",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Get by Slug",
+            "url": "{{HOST}}/{{VERSION}}/tenants/arasaka-corp",
+            "method": "GET",
+            "headers": [],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Delete by Slug",
+            "url": "{{HOST}}/{{VERSION}}/tenants/temp",
+            "method": "DELETE",
+            "headers": [],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Companies",
+        "icon": {
+          "name": "globe",
+          "color": "blue"
+        },
+        "auth": {
+          "type": "none"
+        },
+        "requests": [
+          {
+            "name": "Get",
+            "url": "{{HOST}}/{{VERSION}}/companies",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-Tenant",
+                "value": "{{TENANT}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [
+              {
+                "name": "page",
+                "value": "1",
+                "enabled": true
+              },
+              {
+                "name": "size",
+                "value": "20",
+                "enabled": true
+              },
+              {
+                "name": "sort",
+                "value": "name",
+                "enabled": true
+              },
+              {
+                "name": "order",
+                "value": "asc",
+                "enabled": true
+              }
+            ],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Create",
+            "url": "{{HOST}}/{{VERSION}}/companies",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "X-Tenant",
+                "value": "{{TENANT}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "text",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "{\n  \"name\": \"Temp\"\n}",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Update by Name",
+            "url": "{{HOST}}/{{VERSION}}/companies/Temp",
+            "method": "PUT",
+            "headers": [
+              {
+                "name": "X-Tenant",
+                "value": "{{TENANT}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "text",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "{\n  \"name\": \"Miltech International\"\n}",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Get by Name",
+            "url": "{{HOST}}/{{VERSION}}/companies/Miltech%20International",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "X-Tenant",
+                "value": "{{TENANT}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Delete by Name",
+            "url": "{{HOST}}/{{VERSION}}/companies/Miltech%20International",
+            "method": "DELETE",
+            "headers": [
+              {
+                "name": "X-Tenant",
+                "value": "{{TENANT}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "environments": [
+      {
+        "name": "Defaults",
+        "color": "green",
+        "isDefault": true,
+        "isLocalOnly": false,
+        "variables": [
+          {
+            "name": "HOST",
+            "value": "http://localhost:8787",
+            "isSecret": false
+          },
+          {
+            "name": "VERSION",
+            "value": "v1",
+            "isSecret": false
+          },
+          {
+            "name": "TENANT",
+            "value": "019a1fdb-7142-7b83-924f-987937fbdfa4",
+            "isSecret": false
+          }
+        ]
+      },
+      {
+        "name": "Production",
+        "color": "orange",
+        "isDefault": false,
+        "isLocalOnly": false,
+        "variables": [
+          {
+            "name": "HOST",
+            "value": "https://api.botprzemek.pl",
+            "isSecret": false
+          },
+          {
+            "name": "VERSION",
+            "value": "v1",
+            "isSecret": false
+          },
+          {
+            "name": "TENANT",
+            "value": "019a1fdb-7142-7b83-924f-987937fbdfa4",
+            "isSecret": false
+          }
+        ]
+      }
+    ],
+    "drafts": []
+  }
+}

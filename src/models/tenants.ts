@@ -1,0 +1,191 @@
+import { validator } from "hono/validator";
+
+import { uuidv7 } from "uuidv7";
+
+export const status = ["inactive", "active", "pending"] satisfies Readonly<TenantStatus[]>;
+
+const active = status.indexOf("active") satisfies number;
+
+const fields = ["name", "slug", "status"] satisfies Array<keyof TenantFields>;
+
+const field = (sort: string) => fields.find((field) => field === sort) || fields.at(0)!;
+
+const order = (order: string) => (order?.toLocaleUpperCase() === "DESC" ? "DESC" : "ASC");
+
+const limit = (page: string) => Number(page || 1);
+
+const offset = (page: string, size: string) => (limit(page) - 1) * Number(size || 99999999);
+
+const map = (tenant: TenantRow): Tenant => ({
+  ...tenant,
+  status: status[tenant.status],
+  created_at: new Date(tenant.created_at),
+  updated_at: tenant.updated_at ? new Date(tenant.updated_at) : null,
+});
+
+export const validateBody = validator("json", (value, _) =>
+  Object.entries(value)
+    .filter(([_, field]) => !!field)
+    .filter(([key, _]) => fields.includes(key as keyof TenantFields))
+    .reduce(
+      (acc, [key, field]) => ({
+        ...acc,
+        [key]: key === "status" ? Number(field) : field,
+      }),
+      {} as TenantFields
+    )
+);
+
+type QueryOptions = {
+  sort: string;
+  order: string;
+  size: string;
+  page: string;
+};
+
+export const get = async (d1: Bindings["D1"], options: QueryOptions) => {
+  const { results } = await d1
+    .prepare(
+      `
+        SELECT 
+          tid,
+          name,
+          slug,
+          status,
+          created_at,
+          updated_at
+        FROM tenants
+        WHERE status = ?
+        ORDER BY ${field(options.sort)} ${order(options.order)}
+        LIMIT ?
+        OFFSET ?
+      `
+    )
+    .bind(active, limit(options.size), offset(options.page, options.size))
+    .all<TenantRow>();
+
+  return results.map<Tenant>(map);
+};
+
+export const getBySlug = async (
+  d1: Bindings["D1"],
+  slug: Tenant["slug"]
+): Promise<Tenant | null> => {
+  const result = await d1
+    .prepare(
+      `
+        SELECT 
+          tid,
+          name,
+          slug,
+          status,
+          created_at,
+          updated_at
+        FROM tenants
+        WHERE status = ?
+        AND slug = ?
+        LIMIT 1
+      `
+    )
+    .bind(active, slug)
+    .first<TenantRow>();
+
+  if (!result) {
+    return null;
+  }
+
+  return map(result);
+};
+
+type Body = Omit<TenantRow, "tid" | "created_at" | "updated_at">;
+
+export const create = async (d1: Bindings["D1"], { name, slug, status }: Body) => {
+  const result = await d1
+    .prepare(
+      `
+        INSERT INTO tenants (tid, name, slug, status)
+        VALUES (?, ?, ?, ?)
+        RETURNING
+          tid,
+          name,
+          slug,
+          status,
+          created_at,
+          updated_at
+      `
+    )
+    .bind(uuidv7(), name, slug, status)
+    .first<TenantRow>();
+
+  if (!result) {
+    return null;
+  }
+
+  return map(result);
+};
+
+export const updateBySlug = async (
+  d1: Bindings["D1"],
+  slug: Tenant["slug"],
+  entries: (string | number)[][]
+) => {
+  const result = await d1
+    .prepare(
+      `
+        UPDATE tenants
+        SET
+          ${entries.map(([key, _]) => key).join(", \n")},
+          updated_at = CURRENT_TIMESTAMP
+        WHERE slug = ?
+        RETURNING
+          tid,
+          name,
+          slug,
+          status,
+          created_at,
+          updated_at
+      `
+    )
+    .bind(...entries.map(([_, value]) => value), slug)
+    .first<TenantRow>();
+
+  if (!result) {
+    return null;
+  }
+
+  return map(result);
+};
+
+export const deleteBySlug = async (d1: Bindings["D1"], slug: Tenant["slug"]) => {
+  const result = await d1
+    .prepare(
+      `
+        DELETE FROM tenants
+        WHERE slug = ?
+        RETURNING
+          tid,
+          name,
+          slug,
+          status,
+          created_at,
+          updated_at
+      `
+    )
+    .bind(slug)
+    .first<TenantRow>();
+
+  if (!result) {
+    return null;
+  }
+
+  return map(result);
+};
+
+export default {
+  validateBody,
+  get,
+  getBySlug,
+  create,
+  updateBySlug,
+  deleteBySlug,
+};
