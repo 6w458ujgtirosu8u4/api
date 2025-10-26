@@ -1,0 +1,31 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "compatibility_date": "2025-10-08",
+  "main": "src/index.ts",
+  "minify": true,
+  "name": "api",
+  "upload_source_maps": true,
+  "routes": [
+    {
+      "pattern": "api.botprzemek.pl",
+      "custom_domain": true
+    }
+  ],
+  "workers_dev": false,
+  "d1_databases": [
+    {
+      "binding": "D1",
+      "database_name": "d1-api",
+      "database_id": "4e3ac2fd-0cb6-4b4b-9612-ce5eeb63946c"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "728532b56fb04c1cbc8355b1bef022c9"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
