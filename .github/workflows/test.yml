@@ -19,6 +19,4 @@ jobs:
       - name: "Install NPM dependencies"
         run: npm install
       - name: "Test with Vitest"
-        run: npx vitest --coverage.enabled true
-      - name: "Report Coverage"
-        uses: davelosert/vitest-coverage-report-action@v2
+        run: npx vitest run
