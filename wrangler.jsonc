@@ -3,15 +3,18 @@
   "compatibility_date": "2025-10-08",
   "main": "src/index.ts",
   "minify": true,
-  "name": "api",
+  "name": "marketing-api",
   "upload_source_maps": true,
+  "workers_dev": false,
+  "observability": {
+    "enabled": true
+  },
   "routes": [
     {
-      "pattern": "api.botprzemek.pl",
+      "pattern": "marketing-api.botprzemek.pl",
       "custom_domain": true
     }
   ],
-  "workers_dev": false,
   "d1_databases": [
     {
       "binding": "D1",
@@ -24,8 +27,5 @@
       "binding": "KV",
       "id": "728532b56fb04c1cbc8355b1bef022c9"
     }
-  ],
-  "observability": {
-    "enabled": true
-  }
+  ]
 }
