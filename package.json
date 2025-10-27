@@ -1,11 +1,39 @@
 {
-  "name": "api",
+  "name": "marketing-api",
   "version": "1.0.0",
   "description": "An API server using Hono, Cloudflare Workers, D1 and KV.",
+  "keywords": [
+    "nodejs",
+    "api",
+    "typescript",
+    "workers",
+    "cloudflare",
+    "hono"
+  ],
   "private": true,
+  "license": "UNLICENSED",
+  "contributors": [
+    {
+      "name": "botprzemek",
+      "email": "info@botprzemek.pl",
+      "url": "https://github.com/botprzemek"
+    }
+  ],
+  "homepage": "https://github.com/botprzemek/marketing-api?tab=readme-ov-file#readme",
+  "bugs": {
+    "url": "https://github.com/botprzemek/marketing-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/botprzemek/marketing-api.git"
+  },
   "type": "module",
+  "engines": {
+    "node": ">23.0.0",
+    "npm": ">11.0.0"
+  },
   "cloudflare": {
-    "label": "Worker API Server",
+    "label": "Worker Marketing API Server",
     "products": [
       "Workers",
       "Node.js",
