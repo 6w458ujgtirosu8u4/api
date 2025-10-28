@@ -1,8 +1,9 @@
 interface QueryOptions {
-  sort: string;
-  order: string;
-  size: string;
-  page: string;
+  sort?: string;
+  order?: string;
+  size?: string;
+  page?: string;
+  filter?: string[];
 }
 
 interface Bindings {

@@ -16,7 +16,7 @@ describe("API Companies", () => {
   it("Dispatches POST fetch event - Create company", async () => {
     const tenant = await createTenant(env.D1, TENANT);
 
-    if (!tenant) {
+    if (!tenant || !tenant.tid) {
       throw new Error("Failed to create tenant for company tests");
     }
 
@@ -32,13 +32,13 @@ describe("API Companies", () => {
     expect(data.cid).toBeDefined();
     expect(data.name).toBe(COMPANY.name);
     expect(data.created_at).toBeDefined();
-    expect(data.updated_at).toBeNull();
+    expect(data.updated_at).toBeUndefined();
   });
 
   it("Dispatches GET fetch event - Get company", async () => {
     const tenant = await createTenant(env.D1, TENANT);
 
-    if (!tenant) {
+    if (!tenant || !tenant.tid) {
       throw new Error("Failed to create Tenant for Company tests");
     }
 
@@ -54,13 +54,13 @@ describe("API Companies", () => {
     expect(data.cid).toBeDefined();
     expect(data.name).toBe(COMPANY.name);
     expect(data.created_at).toBeDefined();
-    expect(data.updated_at).toBeNull();
+    expect(data.updated_at).toBeUndefined();
   });
 
   it("Dispatches PUT fetch event - Update company", async () => {
     const tenant = await createTenant(env.D1, TENANT);
 
-    if (!tenant) {
+    if (!tenant || !tenant.tid) {
       throw new Error("Failed to create Tenant for Company tests");
     }
 
@@ -88,7 +88,7 @@ describe("API Companies", () => {
   it("Dispatches DELETE fetch event - Delete tenant", async () => {
     const tenant = await createTenant(env.D1, TENANT);
 
-    if (!tenant) {
+    if (!tenant || !tenant.tid) {
       throw new Error("Failed to create Tenant for Company tests");
     }
 
@@ -105,6 +105,6 @@ describe("API Companies", () => {
     expect(data.cid).toBeDefined();
     expect(data.name).toBe(COMPANY.name);
     expect(data.created_at).toBeDefined();
-    expect(data.updated_at).toBeDefined();
+    expect(data.updated_at).toBeUndefined();
   });
 });

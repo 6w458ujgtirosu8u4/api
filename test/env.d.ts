@@ -3,6 +3,5 @@ declare module "cloudflare:test" {
     MIGRATIONS: D1Migration[];
 
     D1: D1Database;
-    KV: KVNamespace;
   }
 }

@@ -2,7 +2,7 @@ import { validator } from "hono/validator";
 
 import { uuidv7 } from "uuidv7";
 
-import { sort, order, limit, offset } from "@/helpers/query";
+import { sort, order, limit, offset, filter } from "@/helpers/query";
 
 export const status = ["inactive", "active", "pending"] satisfies Readonly<TenantStatus[]>;
 
@@ -10,11 +10,13 @@ const active = status.indexOf("active") satisfies number;
 
 const fields = ["name", "slug", "status"] satisfies Array<keyof TenantFields>;
 
-const map = (tenant: TenantRow): Tenant => ({
+const selecting = filter<Tenant>(["tid", "name", "slug", "status", "created_at", "updated_at"]);
+
+const map = (tenant: Partial<TenantRow>): Partial<Tenant> => ({
   ...tenant,
-  status: status[tenant.status],
-  created_at: new Date(tenant.created_at),
-  updated_at: tenant.updated_at ? new Date(tenant.updated_at) : null,
+  status: tenant.status ? status[tenant.status] : undefined,
+  created_at: tenant.created_at ? new Date(tenant.created_at) : undefined,
+  updated_at: tenant.updated_at ? new Date(tenant.updated_at) : undefined,
 });
 
 export const validateBody = validator("json", (value, _) =>
@@ -30,24 +32,12 @@ export const validateBody = validator("json", (value, _) =>
     )
 );
 
-type QueryOptions = {
-  sort: string;
-  order: string;
-  size: string;
-  page: string;
-};
-
 export const get = async (d1: Bindings["D1"], options: QueryOptions) => {
   const { results } = await d1
     .prepare(
       `
         SELECT 
-          tid,
-          name,
-          slug,
-          status,
-          created_at,
-          updated_at
+          ${selecting(options.filter)}
         FROM tenants
         WHERE status = ?
         ORDER BY ${sort(fields)(options.sort)} ${order(options.order)}
@@ -56,25 +46,21 @@ export const get = async (d1: Bindings["D1"], options: QueryOptions) => {
       `
     )
     .bind(active, limit(options.size), offset(options.page, options.size))
-    .all<TenantRow>();
+    .all<Partial<TenantRow>>();
 
-  return results.map<Tenant>(map);
+  return results.map(map);
 };
 
 export const getBySlug = async (
   d1: Bindings["D1"],
-  slug: Tenant["slug"]
-): Promise<Tenant | null> => {
+  slug: Tenant["slug"],
+  options: QueryOptions
+) => {
   const result = await d1
     .prepare(
       `
         SELECT 
-          tid,
-          name,
-          slug,
-          status,
-          created_at,
-          updated_at
+          ${selecting(options.filter)}
         FROM tenants
         WHERE status = ?
         AND slug = ?

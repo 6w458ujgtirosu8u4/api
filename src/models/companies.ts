@@ -3,14 +3,16 @@ import { validator } from "hono/validator";
 
 import { uuidv7 } from "uuidv7";
 
-import { sort, order, limit, offset } from "@/helpers/query";
+import { sort, order, limit, offset, filter } from "@/helpers/query";
+
+const selecting = filter<Company>(["cid", "name", "created_at", "updated_at"]);
 
 const fields = ["name"] satisfies Array<keyof CompanyFields>;
 
-const map = (company: CompanyRow): Company => ({
+const map = (company: Partial<CompanyRow>): Partial<Company> => ({
   ...company,
-  created_at: new Date(company.created_at),
-  updated_at: company.updated_at ? new Date(company.updated_at) : null,
+  created_at: company.created_at ? new Date(company.created_at) : undefined,
+  updated_at: company.updated_at ? new Date(company.updated_at) : undefined,
 });
 
 export const validateBody = validator("json", (value, _) =>
@@ -26,7 +28,7 @@ export const validateBody = validator("json", (value, _) =>
     )
 );
 
-export const validateHeader = validator("header", (value, c) => {
+export const validateHeader = validator("header", (value, _) => {
   const tenant = value["x-tenant"];
 
   if (!tenant) {
@@ -43,10 +45,7 @@ export const get = async (d1: Bindings["D1"], tenant: Company["tid"], options: Q
     .prepare(
       `
         SELECT
-          cid,
-          name,
-          created_at,
-          updated_at
+          ${selecting(options.filter)}
         FROM companies
         WHERE tid = ?
         ORDER BY ${sort(fields)(options.sort)} ${order(options.order)}
@@ -55,24 +54,22 @@ export const get = async (d1: Bindings["D1"], tenant: Company["tid"], options: Q
       `
     )
     .bind(tenant, limit(options.size), offset(options.page, options.size))
-    .all<CompanyRow>();
+    .all<Partial<CompanyRow>>();
 
-  return results.map<Company>(map);
+  return results.map(map);
 };
 
 export const getByName = async (
   d1: Bindings["D1"],
   tenant: Company["tid"],
-  name: Company["name"]
+  name: Company["name"],
+  options: QueryOptions = {}
 ) => {
   const result = await d1
     .prepare(
       `
         SELECT 
-          cid,
-          name,
-          created_at,
-          updated_at
+          ${selecting(options.filter)}
         FROM companies
         WHERE tid = ?
         AND name = ?
@@ -80,7 +77,7 @@ export const getByName = async (
       `
     )
     .bind(tenant, name)
-    .first<CompanyRow>();
+    .first<Partial<CompanyRow>>();
 
   if (!result) {
     return null;
@@ -89,9 +86,7 @@ export const getByName = async (
   return map(result);
 };
 
-type Body = Omit<CompanyRow, "cid" | "tid" | "created_at" | "updated_at">;
-
-export const create = async (d1: Bindings["D1"], tenant: Company["tid"], { name }: Body) => {
+export const create = async (d1: Bindings["D1"], tenant: Company["tid"], { name }: CompanyBody) => {
   const result = await d1
     .prepare(
       `

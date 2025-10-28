@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono } from "hono/tiny";
 import { HTTPException } from "hono/http-exception";
 
 import { validateBody, get, getBySlug, create, deleteBySlug, updateBySlug } from "@/models/tenants";
@@ -6,15 +6,17 @@ import { validateBody, get, getBySlug, create, deleteBySlug, updateBySlug } from
 export default new Hono<{ Bindings: Bindings }>()
   .get("/", async (c) => {
     const { sort, order, size, page } = c.req.query();
+    const filter = c.req.queries("filter");
 
-    const data = await get(c.env.D1, { sort, order, size, page });
+    const data = await get(c.env.D1, { sort, order, size, page, filter });
 
     return c.json({ data });
   })
   .get("/:slug", async (c) => {
     const { slug } = c.req.param();
+    const filter = c.req.queries("filter");
 
-    const data = await getBySlug(c.env.D1, slug);
+    const data = await getBySlug(c.env.D1, slug, { filter });
 
     if (!data) {
       throw new HTTPException(404);
@@ -37,8 +39,9 @@ export default new Hono<{ Bindings: Bindings }>()
   })
   .put("/:slug", validateBody, async (c) => {
     const { slug } = c.req.param();
+    const filter = c.req.queries("filter");
 
-    const check = await getBySlug(c.env.D1, slug);
+    const check = await getBySlug(c.env.D1, slug, { filter });
 
     if (!check) {
       throw new HTTPException(404);
