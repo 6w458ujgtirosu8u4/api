@@ -1,7 +1,7 @@
 {
   "name": "marketing-api",
   "version": "1.0.0",
-  "description": "An API server using Hono, Cloudflare Workers, D1 and KV.",
+  "description": "An API server using Hono, Cloudflare Workers and D1.",
   "keywords": [
     "nodejs",
     "api",
@@ -37,8 +37,7 @@
     "products": [
       "Workers",
       "Node.js",
-      "D1",
-      "KV"
+      "D1"
     ],
     "categories": [
       "api",
@@ -61,11 +60,11 @@
   "scripts": {
     "typegen": "wrangler types",
     "check": "tsc && wrangler deploy --dry-run",
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --env production",
+    "dev": "wrangler dev --env development",
     "build": "wrangler build",
-    "predeploy": "wrangler d1 migrations apply d1-api --remote",
-    "seed": "wrangler d1 migrations apply d1-api --local",
+    "predeploy": "wrangler d1 migrations apply marketing-api --remote",
+    "seed": "wrangler d1 migrations apply marketing-api --local",
     "test": "vitest run"
   }
 }

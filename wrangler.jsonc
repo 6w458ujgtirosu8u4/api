@@ -5,27 +5,43 @@
   "minify": true,
   "name": "marketing-api",
   "upload_source_maps": true,
-  "workers_dev": false,
+  "workers_dev": true,
+  "preview_urls": true,
   "observability": {
     "enabled": true
   },
-  "routes": [
-    {
-      "pattern": "marketing-api.botprzemek.pl",
-      "custom_domain": true
-    }
-  ],
   "d1_databases": [
     {
       "binding": "D1",
-      "database_name": "d1-api",
-      "database_id": "4e3ac2fd-0cb6-4b4b-9612-ce5eeb63946c"
+      "database_name": "marketing-api",
+      "database_id": "6f5b7118-73a6-4fd0-8071-de2529c84e70"
     }
   ],
-  "kv_namespaces": [
-    {
-      "binding": "KV",
-      "id": "728532b56fb04c1cbc8355b1bef022c9"
+  "env": {
+    "development": {
+      "d1_databases": [
+        {
+          "binding": "D1",
+          "database_name": "marketing-api",
+          "database_id": "6f5b7118-73a6-4fd0-8071-de2529c84e70"
+        }
+      ]
+    },
+    "production": {
+      "routes": [
+        {
+          "pattern": "marketing-api.botprzemek.pl",
+          "custom_domain": true
+        }
+      ],
+      "d1_databases": [
+        {
+          "binding": "D1",
+          "database_name": "marketing-api",
+          "database_id": "4e3ac2fd-0cb6-4b4b-9612-ce5eeb63946c",
+          "remote": true
+        }
+      ]
     }
-  ]
+  }
 }
