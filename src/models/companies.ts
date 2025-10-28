@@ -3,15 +3,9 @@ import { validator } from "hono/validator";
 
 import { uuidv7 } from "uuidv7";
 
+import { sort, order, limit, offset } from "@/helpers/query";
+
 const fields = ["name"] satisfies Array<keyof CompanyFields>;
-
-const field = (sort: string) => fields.find((field) => field === sort) || fields.at(0)!;
-
-const order = (order: string) => (order?.toLocaleUpperCase() === "DESC" ? "DESC" : "ASC");
-
-const limit = (page: string) => Number(page || 1);
-
-const offset = (page: string, size: string) => (limit(page) - 1) * Number(size || 99999999);
 
 const map = (company: CompanyRow): Company => ({
   ...company,
@@ -44,13 +38,6 @@ export const validateHeader = validator("header", (value, c) => {
   };
 });
 
-type QueryOptions = {
-  sort: string;
-  order: string;
-  size: string;
-  page: string;
-};
-
 export const get = async (d1: Bindings["D1"], tenant: Company["tid"], options: QueryOptions) => {
   const { results } = await d1
     .prepare(
@@ -62,7 +49,7 @@ export const get = async (d1: Bindings["D1"], tenant: Company["tid"], options: Q
           updated_at
         FROM companies
         WHERE tid = ?
-        ORDER BY ${field(options.sort)} ${order(options.order)}
+        ORDER BY ${sort(fields)(options.sort)} ${order(options.order)}
         LIMIT ?
         OFFSET ?
       `

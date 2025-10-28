@@ -2,19 +2,13 @@ import { validator } from "hono/validator";
 
 import { uuidv7 } from "uuidv7";
 
+import { sort, order, limit, offset } from "@/helpers/query";
+
 export const status = ["inactive", "active", "pending"] satisfies Readonly<TenantStatus[]>;
 
 const active = status.indexOf("active") satisfies number;
 
 const fields = ["name", "slug", "status"] satisfies Array<keyof TenantFields>;
-
-const field = (sort: string) => fields.find((field) => field === sort) || fields.at(0)!;
-
-const order = (order: string) => (order?.toLocaleUpperCase() === "DESC" ? "DESC" : "ASC");
-
-const limit = (page: string) => Number(page || 1);
-
-const offset = (page: string, size: string) => (limit(page) - 1) * Number(size || 99999999);
 
 const map = (tenant: TenantRow): Tenant => ({
   ...tenant,
@@ -32,7 +26,7 @@ export const validateBody = validator("json", (value, _) =>
         ...acc,
         [key]: key === "status" ? Number(field) : field,
       }),
-      {} as TenantFields
+      {} as TenantBody
     )
 );
 
@@ -56,7 +50,7 @@ export const get = async (d1: Bindings["D1"], options: QueryOptions) => {
           updated_at
         FROM tenants
         WHERE status = ?
-        ORDER BY ${field(options.sort)} ${order(options.order)}
+        ORDER BY ${sort(fields)(options.sort)} ${order(options.order)}
         LIMIT ?
         OFFSET ?
       `
@@ -97,9 +91,7 @@ export const getBySlug = async (
   return map(result);
 };
 
-type Body = Omit<TenantRow, "tid" | "created_at" | "updated_at">;
-
-export const create = async (d1: Bindings["D1"], { name, slug, status }: Body) => {
+export const create = async (d1: Bindings["D1"], { name, slug, status }: TenantBody) => {
   const result = await d1
     .prepare(
       `
