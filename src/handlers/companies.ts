@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono } from "hono/tiny";
 import { HTTPException } from "hono/http-exception";
 
 import {
@@ -20,8 +20,9 @@ export default new Hono<{ Bindings: Bindings }>()
     }
 
     const { sort, order, size, page } = c.req.query();
+    const filter = c.req.queries("filter");
 
-    const data = await get(c.env.D1, tenant, { sort, order, size, page });
+    const data = await get(c.env.D1, tenant, { sort, order, size, page, filter });
 
     return c.json({ data });
   })
@@ -33,8 +34,9 @@ export default new Hono<{ Bindings: Bindings }>()
     }
 
     const { name } = c.req.param();
+    const filter = c.req.queries("filter");
 
-    const data = await getByName(c.env.D1, tenant, name);
+    const data = await getByName(c.env.D1, tenant, name, { filter });
 
     if (!data) {
       throw new HTTPException(404);
@@ -51,11 +53,13 @@ export default new Hono<{ Bindings: Bindings }>()
 
       return c.json({ data }, 201);
     } catch (e: any) {
-      if (e.message === "D1_ERROR: UNIQUE constraint failed: tenants.slug: SQLITE_CONSTRAINT") {
-        return c.redirect(`/v1/companies/${body.name}`, 303);
+      if (e.message === "D1_ERROR: FOREIGN KEY constraint failed: SQLITE_CONSTRAINT") {
+        throw new HTTPException(404);
       }
 
-      throw new HTTPException(500);
+      if (e.message === "D1_ERROR: UNIQUE constraint failed: companies.name: SQLITE_CONSTRAINT") {
+        return c.redirect(`/v1/companies/${body.name}`, 303);
+      }
     }
   })
   .put("/:name", validateHeader, validateBody, async (c) => {

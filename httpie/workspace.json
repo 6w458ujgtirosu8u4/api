@@ -32,22 +32,32 @@
             "queryParams": [
               {
                 "name": "page",
-                "value": "1",
+                "value": "2",
                 "enabled": true
               },
               {
                 "name": "size",
-                "value": "20",
+                "value": "5",
                 "enabled": true
               },
               {
                 "name": "sort",
-                "value": "name",
+                "value": "slug",
                 "enabled": true
               },
               {
                 "name": "order",
-                "value": "asc",
+                "value": "desc",
+                "enabled": true
+              },
+              {
+                "name": "filter",
+                "value": "name",
+                "enabled": true
+              },
+              {
+                "name": "filter",
+                "value": "tid",
                 "enabled": true
               }
             ],
@@ -137,7 +147,13 @@
             "url": "{{HOST}}/{{VERSION}}/tenants/arasaka-corp",
             "method": "GET",
             "headers": [],
-            "queryParams": [],
+            "queryParams": [
+              {
+                "name": "filter",
+                "value": "name",
+                "enabled": true
+              }
+            ],
             "pathParams": [],
             "auth": {
               "type": "inherited"
@@ -216,12 +232,12 @@
             "queryParams": [
               {
                 "name": "page",
-                "value": "1",
+                "value": "2",
                 "enabled": true
               },
               {
                 "name": "size",
-                "value": "20",
+                "value": "5",
                 "enabled": true
               },
               {
@@ -231,7 +247,12 @@
               },
               {
                 "name": "order",
-                "value": "asc",
+                "value": "desc",
+                "enabled": true
+              },
+              {
+                "name": "filter",
+                "value": "name",
                 "enabled": true
               }
             ],
@@ -339,7 +360,13 @@
                 "enabled": true
               }
             ],
-            "queryParams": [],
+            "queryParams": [
+              {
+                "name": "filter",
+                "value": "name",
+                "enabled": true
+              }
+            ],
             "pathParams": [],
             "auth": {
               "type": "inherited"
@@ -404,7 +431,7 @@
     "environments": [
       {
         "name": "Defaults",
-        "color": "green",
+        "color": "gray",
         "isDefault": true,
         "isLocalOnly": false,
         "variables": [
@@ -420,7 +447,7 @@
           },
           {
             "name": "TENANT",
-            "value": "019a1fdb-7142-7b83-924f-987937fbdfa4",
+            "value": "018e3d72-5e72-7c96-b23f-ad3e2204d8e1",
             "isSecret": false
           }
         ]
@@ -443,7 +470,7 @@
           },
           {
             "name": "TENANT",
-            "value": "019a1fdb-7142-7b83-924f-987937fbdfa4",
+            "value": "018e3d72-5e72-7c96-b23f-ad3e2204d8e1",
             "isSecret": false
           }
         ]

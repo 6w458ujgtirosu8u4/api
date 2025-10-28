@@ -26,7 +26,7 @@ describe("API Tenant", () => {
     expect(data.slug).toBe(TENANT.slug);
     expect(data.status).toBe(status.at(TENANT.status));
     expect(data.created_at).toBeDefined();
-    expect(data.updated_at).toBeNull();
+    expect(data.updated_at).toBeUndefined();
   });
 
   it("Dispatches GET fetch event - Get tenant", async () => {
@@ -42,7 +42,7 @@ describe("API Tenant", () => {
     expect(data.slug).toBe(TENANT.slug);
     expect(data.status).toBe(status.at(TENANT.status));
     expect(data.created_at).toBeDefined();
-    expect(data.updated_at).toBeNull();
+    expect(data.updated_at).toBeUndefined();
   });
 
   it("Dispatches PUT fetch event - Update tenant", async () => {
@@ -84,6 +84,6 @@ describe("API Tenant", () => {
     expect(data.slug).toBe(TENANT.slug);
     expect(data.status).toBe(status.at(TENANT.status));
     expect(data.created_at).toBeDefined();
-    expect(data.updated_at).toBeDefined();
+    expect(data.updated_at).toBeUndefined();
   });
 });
