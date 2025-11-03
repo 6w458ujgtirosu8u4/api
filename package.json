@@ -49,7 +49,7 @@
     "publish": true
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "0.10.0",
+    "@cloudflare/vitest-pool-workers": "0.10.3",
     "hono": "4.10.3",
     "typescript": "5.9.3",
     "uuidv7": "1.0.2",
