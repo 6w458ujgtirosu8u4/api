@@ -55,7 +55,7 @@
     "uuidv7": "1.0.2",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.4",
-    "wrangler": "4.45.0"
+    "wrangler": "4.45.3"
   },
   "scripts": {
     "typegen": "wrangler types",
