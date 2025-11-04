@@ -1,6 +1,6 @@
 import { Hono } from "hono/tiny";
 
-import tenants from "@/handlers/tenants";
+import organizations from "@/handlers/organizations";
 import companies from "@/handlers/companies";
 
 export default new Hono<{ Bindings: Bindings }>()
@@ -12,5 +12,5 @@ export default new Hono<{ Bindings: Bindings }>()
     const end = performance.now();
     c.res.headers.set("X-Response-Time", `${end - start}ms`);
   })
-  .route("/tenants", tenants)
+  .route("/organizations", organizations)
   .route("/companies", companies);

@@ -3,12 +3,12 @@
 -- Drop existing tables if they exist
 
 DROP TABLE IF EXISTS companies;
-DROP TABLE IF EXISTS tenants;
+DROP TABLE IF EXISTS organizations;
 
 -- Create tables
 
-CREATE TABLE tenants (
-    tid TEXT PRIMARY KEY,
+CREATE TABLE organizations (
+    id TEXT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     slug TEXT NOT NULL UNIQUE,
     status INTEGER NOT NULL DEFAULT 1,
@@ -20,19 +20,19 @@ CREATE TABLE tenants (
 );
 
 CREATE TABLE companies (
-    cid TEXT PRIMARY KEY,
-    tid TEXT NOT NULL,
+    id TEXT PRIMARY KEY,
+    organization_id TEXT NOT NULL,
     name TEXT NOT NULL UNIQUE,
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME,
 
-    FOREIGN KEY(tid) REFERENCES tenants(tid)
+    FOREIGN KEY(organization_id) REFERENCES organizations(id)
 );
 
 -- Create indexes
 
-CREATE INDEX idx_tenants_slug ON tenants(slug);
-CREATE INDEX idx_tenants_status ON tenants(status);
+CREATE INDEX idx_organizations_slug ON organizations(slug);
+CREATE INDEX idx_organizations_status ON organizations(status);
 
 CREATE INDEX idx_companies_slug ON companies(name);

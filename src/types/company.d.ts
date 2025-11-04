@@ -1,6 +1,6 @@
 interface Company {
-  cid: string;
-  tid: string;
+  id: string;
+  organization_id: string;
   name: string;
   created_at: Date;
   updated_at: Date | null;
@@ -13,4 +13,4 @@ interface CompanyRow extends Omit<Company, "created_at" | "updated_at"> {
   updated_at?: string;
 }
 
-type CompanyBody = Omit<Company, "cid" | "tid" | "created_at" | "updated_at">;
+type CompanyBody = Omit<Company, "id" | "organization_id" | "created_at" | "updated_at">;
