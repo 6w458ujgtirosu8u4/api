@@ -49,7 +49,7 @@ export default new Hono<{ Bindings: Bindings }>()
 
     const body = c.req.valid("json");
     const entries = Object.entries(body)
-      .filter(([key, value]) => value !== check[key as keyof Omit<Organization, "oid">])
+      .filter(([key, value]) => value !== check[key as keyof Omit<Organization, "id">])
       .map(([key, value]) => [`${key} = ?`, value]);
 
     if (!entries.length) {
