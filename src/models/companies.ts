@@ -5,7 +5,7 @@ import { uuidv7 } from "uuidv7";
 
 import { sort, order, limit, offset, filter } from "@/helpers/query";
 
-const selecting = filter<Company>(["cid", "name", "created_at", "updated_at"]);
+const selecting = filter<Company>(["id", "name", "created_at", "updated_at"]);
 
 const fields = ["name"] satisfies Array<keyof CompanyFields>;
 
@@ -29,31 +29,31 @@ export const validateBody = validator("json", (value, _) =>
 );
 
 export const validateHeader = validator("header", (value, _) => {
-  const tenant = value["x-tenant"];
+  const organization_id = value["x-organization"];
 
-  if (!tenant) {
+  if (!organization_id) {
     throw new HTTPException(401);
   }
 
   return {
-    tenant,
+    organization_id,
   };
 });
 
-export const get = async (d1: Bindings["D1"], tenant: Company["tid"], options: QueryOptions) => {
+export const get = async (d1: Bindings["D1"], organization_id: Company["organization_id"], options: QueryOptions) => {
   const { results } = await d1
     .prepare(
       `
         SELECT
           ${selecting(options.filter)}
         FROM companies
-        WHERE tid = ?
+        WHERE organization_id = ?
         ORDER BY ${sort(fields)(options.sort)} ${order(options.order)}
         LIMIT ?
         OFFSET ?
       `
     )
-    .bind(tenant, limit(options.size), offset(options.page, options.size))
+    .bind(organization_id, limit(options.size), offset(options.page, options.size))
     .all<Partial<CompanyRow>>();
 
   return results.map(map);
@@ -61,7 +61,7 @@ export const get = async (d1: Bindings["D1"], tenant: Company["tid"], options: Q
 
 export const getByName = async (
   d1: Bindings["D1"],
-  tenant: Company["tid"],
+  organization_id: Company["organization_id"],
   name: Company["name"],
   options: QueryOptions = {}
 ) => {
@@ -71,12 +71,12 @@ export const getByName = async (
         SELECT 
           ${selecting(options.filter)}
         FROM companies
-        WHERE tid = ?
+        WHERE organization_id = ?
         AND name = ?
         LIMIT 1
       `
     )
-    .bind(tenant, name)
+    .bind(organization_id, name)
     .first<Partial<CompanyRow>>();
 
   if (!result) {
@@ -86,20 +86,20 @@ export const getByName = async (
   return map(result);
 };
 
-export const create = async (d1: Bindings["D1"], tenant: Company["tid"], { name }: CompanyBody) => {
+export const create = async (d1: Bindings["D1"], organization_id: Company["organization_id"], { name }: CompanyBody) => {
   const result = await d1
     .prepare(
       `
-        INSERT INTO companies (cid, tid, name)
+        INSERT INTO companies (id, organization_id, name)
         VALUES (?, ?, ?)
         RETURNING
-          cid,
+          id,
           name,
           created_at,
           updated_at
       `
     )
-    .bind(uuidv7(), tenant, name)
+    .bind(uuidv7(), organization_id, name)
     .first<CompanyRow>();
 
   if (!result) {
@@ -111,7 +111,7 @@ export const create = async (d1: Bindings["D1"], tenant: Company["tid"], { name 
 
 export const updateByName = async (
   d1: Bindings["D1"],
-  tenant: Company["tid"],
+  organization_id: Company["organization_id"],
   name: Company["name"],
   entries: (string | number)[][]
 ) => {
@@ -122,16 +122,16 @@ export const updateByName = async (
         SET
           ${entries.map(([key, _]) => key).join(", \n")},
           updated_at = CURRENT_TIMESTAMP
-        WHERE tid = ?
+        WHERE organization_id = ?
         AND name = ?
         RETURNING
-          cid,
+          id,
           name,
           created_at,
           updated_at
       `
     )
-    .bind(...entries.map(([_, value]) => value), tenant, name)
+    .bind(...entries.map(([_, value]) => value), organization_id, name)
     .first<CompanyRow>();
 
   if (!result) {
@@ -143,23 +143,23 @@ export const updateByName = async (
 
 export const deleteByName = async (
   d1: Bindings["D1"],
-  tenant: Company["tid"],
+  organization_id: Company["organization_id"],
   name: Company["name"]
 ) => {
   const result = await d1
     .prepare(
       `
         DELETE FROM companies
-        WHERE tid = ?
+        WHERE organization_id = ?
         AND name = ?
         RETURNING
-          cid,
+          id,
           name,
           created_at,
           updated_at
       `
     )
-    .bind(tenant, name)
+    .bind(organization_id, name)
     .first<CompanyRow>();
 
   if (!result) {
