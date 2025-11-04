@@ -13,7 +13,7 @@ import {
 
 export default new Hono<{ Bindings: Bindings }>()
   .get("/", validateHeader, async (c) => {
-    const {organization_id } = c.req.valid("header");
+    const { organization_id } = c.req.valid("header");
 
     if (!organization_id) {
       throw new HTTPException(400);
