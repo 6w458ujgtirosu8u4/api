@@ -5,9 +5,41 @@ import { uuidv7 } from "uuidv7";
 
 import { sort, order, limit, offset, filter } from "@/helpers/query";
 
-const selecting = filter<Company>(["id", "name", "created_at", "updated_at"]);
+const selectFields: Array<keyof Company> = [
+  "id",
+  "organization_id",
+  "legal_type_id",
+  "name",
+  "email",
+  "phone",
+  "address",
+  "website",
+  "vat",
+  "registration_date",
+  "created_at",
+  "updated_at",
+];
 
-const fields = ["name"] satisfies Array<keyof CompanyFields>;
+const selecting = filter<Company>(selectFields);
+
+const fields = [
+  "name",
+  "email",
+  "phone",
+  "address",
+  "website",
+  "vat",
+  "registration_date",
+  "legal_type_id",
+] satisfies Array<keyof CompanyFields>;
+
+const requiredFields: Array<keyof CompanyBody> = [
+  "legal_type_id",
+  "name",
+  "email",
+  "phone",
+  "address",
+];
 
 const map = (company: Partial<CompanyRow>): Partial<Company> => ({
   ...company,
@@ -17,7 +49,7 @@ const map = (company: Partial<CompanyRow>): Partial<Company> => ({
 
 export const validateBody = validator("json", (value, _) =>
   Object.entries(value)
-    .filter(([_, field]) => !!field)
+    .filter(([_, field]) => field !== undefined && field !== null && field !== "")
     .filter(([key, _]) => fields.includes(key as keyof CompanyFields))
     .reduce(
       (acc, [key, field]) => ({
@@ -86,20 +118,56 @@ export const getByName = async (
   return map(result);
 };
 
-export const create = async (d1: Bindings["D1"], organization_id: Company["organization_id"], { name }: CompanyBody) => {
+export const create = async (d1: Bindings["D1"], organization_id: Company["organization_id"], body: CompanyBody) => {
+  for (const field of requiredFields) {
+    if (!body[field]) {
+      throw new HTTPException(422, { message: `${field} is required` });
+    }
+  }
+
   const result = await d1
     .prepare(
       `
-        INSERT INTO companies (id, organization_id, name)
-        VALUES (?, ?, ?)
+        INSERT INTO companies (
+          id,
+          organization_id,
+          legal_type_id,
+          name,
+          email,
+          phone,
+          address,
+          website,
+          vat,
+          registration_date
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING
           id,
+          organization_id,
+          legal_type_id,
           name,
+          email,
+          phone,
+          address,
+          website,
+          vat,
+          registration_date,
           created_at,
           updated_at
       `
     )
-    .bind(uuidv7(), organization_id, name)
+    .bind(
+      uuidv7(),
+      organization_id,
+      body.legal_type_id,
+      body.name,
+      body.email,
+      body.phone,
+      body.address,
+      body.website ?? null,
+      body.vat ?? null,
+      body.registration_date ?? null
+    )
     .first<CompanyRow>();
 
   if (!result) {
@@ -113,8 +181,12 @@ export const updateByName = async (
   d1: Bindings["D1"],
   organization_id: Company["organization_id"],
   name: Company["name"],
-  entries: (string | number)[][]
+  entries: (string | number | null)[][]
 ) => {
+  if (!entries.length) {
+    return getByName(d1, organization_id, name);
+  }
+
   const result = await d1
     .prepare(
       `
@@ -126,7 +198,15 @@ export const updateByName = async (
         AND name = ?
         RETURNING
           id,
+          organization_id,
+          legal_type_id,
           name,
+          email,
+          phone,
+          address,
+          website,
+          vat,
+          registration_date,
           created_at,
           updated_at
       `
