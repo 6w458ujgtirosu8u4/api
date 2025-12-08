@@ -52,7 +52,7 @@
     "@cloudflare/vitest-pool-workers": "0.10.3",
     "hono": "4.10.4",
     "typescript": "5.9.3",
-    "uuidv7": "1.0.2",
+    "uuidv7": "1.1.0",
     "vite-tsconfig-paths": "5.1.4",
     "vitest": "3.2.4",
     "wrangler": "4.45.3"
