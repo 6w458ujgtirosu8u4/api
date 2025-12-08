@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "0.10.3",
-    "hono": "4.10.4",
+    "hono": "4.10.7",
     "typescript": "5.9.3",
     "uuidv7": "1.0.2",
     "vite-tsconfig-paths": "5.1.4",
